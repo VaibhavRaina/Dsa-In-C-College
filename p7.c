@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
-struct CQueue
+struct Cq
 {
     int f;
     int r;
@@ -9,79 +10,99 @@ struct CQueue
     int *arr;
 };
 
-int isFull(struct CQueue *q)
+int isFull(struct Cq *q)
 {
-    if ((q->r) % (q->size) == q->f)
+    if ((q->r + 1) % (q->size) == q->f)
     {
+        printf("Queue is full\n");
         return 1;
     }
     return 0;
 }
 
-int isEmpty(struct CQueue *q)
+int isEmpty(struct Cq *q)
 {
     if (q->r == q->f)
     {
+        printf("Queue is empty\n");
         return 1;
     }
     return 0;
 }
 
-void enqueue(struct CQueue *q, int value)
+void enqueue(struct Cq *q, int data)
 {
     if (isFull(q))
     {
-        printf("queue is already full\n");
+        return;
     }
-    else
-    {
-        q->r = (q->r + 1) % (q->size);
-        q->arr[q->r] = value;
-    }
+    q->r = (q->r + 1) % q->size;
+    q->arr[q->r] = data;
 }
 
-int dequeue(struct CQueue *q)
+int dequeue(struct Cq *q)
 {
-    int val = -1;
+    int value = -1;
     if (isEmpty(q))
     {
-        printf("queue is empty\n");
+        printf("Queue is empty\n");
+        return value;
     }
-    else
-    {
-        q->f = (q->f + 1) % (q->size);
-        val = q->arr[q->f];
-    }
-    return val;
+    q->f = (q->f + 1) % q->size;
+    value = q->arr[q->f];
+    return value;
 }
+
+void display(struct Cq *q)
+{
+    int i = (q->f + 1) % q->size;
+    while (i != (q->r + 1) % q->size)
+    {
+        printf("%d ", q->arr[i]);
+        i = (i + 1) % q->size;
+    }
+    printf("\n");
+}
+
 int main()
 {
-    while (1)
+    struct Cq *q = malloc(sizeof(struct Cq));
+    q->f = q->r = 0;
+    int n = -1, data;
+    printf("Enter size of queue: ");
+    scanf("%d", &(q->size));
+    q->arr = malloc(q->size * sizeof(int));
+    printf("Enter 1: for adding\n");
+    printf("Enter 2: for removing\n");
+    printf("Enter 3: for displaying\n");
+    printf("Enter 4: for exiting\n");
+    while (n != 4)
     {
-        struct CQueue *q = (struct CQueue *)malloc(sizeof(struct CQueue));
-        int choice;
-        int value;
-        q->r = -1;
-        q->f = -1;
-        printf("Enter the size of queue\n");
-        scanf("%d", q->size);
-        q->arr = (int *)malloc((q->size) * sizeof(int));
-        printf("1:1 for Enqueue\n 2:2 for dequeue\n 3:3 for exit");
-        scanf("%d", &choice);
-        switch (choice)
+        printf("Enter your choice: ");
+        scanf("%d", &n);
+        switch (n)
         {
         case 1:
-            printf("Enter the element you want to enqueue");
-            scanf("%d", &value);
-            enqueue(q, value);
+            printf("Enter element: ");
+            scanf("%d", &data);
+            enqueue(q, data);
             break;
         case 2:
-            printf("dequeue");
-            dequeue(q);
+            printf("Dequeued element: %d\n", dequeue(q));
             break;
         case 3:
-            exit(1);
+            printf("Displaying queue: ");
+            display(q);
+            break;
+        case 4:
+            exit(0);
+            break;
+        default:
+            printf("Invalid choice\n");
             break;
         }
     }
+    free(q->arr);
+    free(q);
+    return 0;
 }

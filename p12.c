@@ -7,14 +7,6 @@ struct node
     int data;
 };
 
-struct node *create(int data)
-{
-    struct node *p = (struct node *)malloc(sizeof(struct node));
-    p->data = data;
-    p->left = NULL;
-    p->right = NULL;
-    return p;
-}
 struct node *preOrder(struct node *p)
 {
     if (p != NULL)
@@ -47,7 +39,7 @@ struct node *inOrder(struct node *p)
     }
 }
 
-struct node *insert(struct *node root, int data)
+struct node *insert(struct node *root, int data)
 {
     if (!root)
     {
@@ -67,11 +59,11 @@ struct node *insert(struct *node root, int data)
     }
 }
 
-struct node *search(struct node *root, int data)
+struct node *search(struct node *root, int target)
 {
     if (!root)
     {
-        return create(data);
+        return create(value);
     }
     else if (target < root->data)
     {
@@ -79,10 +71,11 @@ struct node *search(struct node *root, int data)
     }
     else if (target > root->data)
     {
-        root->right = search(root->left, data);
+        root->right = search(root->right, data);
     }
     else
     {
         printf("Not found\n");
     }
+    return root;
 }
